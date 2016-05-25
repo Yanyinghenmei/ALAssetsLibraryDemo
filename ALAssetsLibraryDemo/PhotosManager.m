@@ -10,6 +10,7 @@
 
 @interface PhotosManager ()
 @property (nonatomic, copy)typeof(void(^)(NSArray *imageArr))block;
+@property (nonatomic, strong)NSMutableArray *nameArr;
 @end
 
 static PhotosManager *manager = nil;
@@ -28,6 +29,7 @@ static PhotosManager *manager = nil;
         manager = [PhotosManager new];
         manager.assetlibrary = [ALAssetsLibrary new];
         manager.imageArray = @[].mutableCopy;
+        manager.nameArr = @[].mutableCopy;
     });
     return manager;
 }
@@ -87,10 +89,13 @@ static PhotosManager *manager = nil;
         ALAssetRepresentation *representation = [result defaultRepresentation];
         UIImage *image = [UIImage imageWithCGImage:representation.fullResolutionImage];
         
-        if (image) {
+        if (image && ![blockSelf.nameArr containsObject:[representation filename]]) {
+            [blockSelf.nameArr addObject:[representation filename]];
             [blockSelf.imageArray addObject:image];
         }
     }];
 }
+
+//Asset Representation 资源表现
 
 @end
